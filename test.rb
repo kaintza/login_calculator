@@ -1,36 +1,31 @@
-class LoginCalculator
+class LoginsPerYearCalculator
   def initialize(people, logins)
     @people = people
     @logins = logins
   end
 
   def calculate
-    logins = @logins.each {|index, years| years.map! {|year| year.year}.sort!}
-
-    logins.each do |k,v|
-      counts = Hash.new(0)
-      logins[k].each {|y| counts[y] += 1 }
-      logins[k] = counts
+    sorted_logins_with_years = @logins.each do |id, dates|
+      dates.map! do |date|
+        date.year
+      end.sort!
     end
 
-    logins = logins.sort_by {|k, v| @people[k]}.to_h
-    logins.transform_keys{ |key| key = @people.select {|p| p[0] == key}.first[1].to_sym }
+    counted_logins_per_years = sorted_logins_with_years.each do |id,years|
+      counts = Hash.new(0)
+      sorted_logins_with_years[id].each {|year| counts[year] += 1 }
+      sorted_logins_with_years[id] = counts
+    end
+
+    sorted_counted_logins = counted_logins_per_years.sort_by {|id, year| @people[id]}.to_h
+    counted_logins_with_name = sorted_counted_logins.transform_keys do |id|
+      @people.select do |person| person[0] == id
+      end.first[1]
+    end
   end
 end
 
-
-#login_calculator = LoginCalculator.new(people, logins)
-
-#puts login_calculator.calculate
-
-#begin
-#This is a small ruby exercise.
-#    In the logins.rb there is a people array with [id, name], and you have a logins hash with the keys as the ids of the people.
-#    Your goal is to print a nested hash on the screen where you count logins per year for each person.
-#        The end result should be similar to this:
-#                                                {
- #                                                   "matayo"=>{1973=>1, 1980=>1, 2010=>1, 2003=>1, 1976=>1, 2005=>1, 2011=>1, 1989=>1},
-  #"#{                                                  "nico"=>{1976=>1, 1988=>1, 2005=>1, 1980=>1, 1983=>1, 1972=>2, 1987=>1},
-   #"                                                 "angelo"=>{1982=>1, 2006=>1, 1988=>1, 1992=>2, 2016=>1, 1995=>2},
-     #                                               "luca"=>{1992=>1, 1970=>1, 1972=>1, 1978=>1, 1976=>1, 2004=>1, 2009=>1, 2011=>1}},
+def rand_time
+  Time.at(rand * Time.now.to_i)
+end
 
