@@ -1,4 +1,5 @@
 class LoginsPerYearCalculator
+  #This class will calculate the logins per year for each person in an array
   def initialize(people, logins)
     @people = people
     @logins = logins
@@ -23,9 +24,5 @@ class LoginsPerYearCalculator
       end.first[1]
     end
   end
-end
-
-def rand_time
-  Time.at(rand * Time.now.to_i)
 end
 
